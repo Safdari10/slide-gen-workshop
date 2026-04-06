@@ -1,42 +1,67 @@
-# Quick start — clone, install, run
+# Quick Start — Clone, Install, Run
 
-##1. Clone
+## 1. Clone
 
-   git clone <repo-url>
-   
-   cd slide-gen-workshop
+```bash
+git clone <repo-url>
+cd slide-gen-workshop
+```
 
-##2. Backend (Python)
+## 2. Backend (Python)
 
-   cd backend
-   
-   Environment variables, Update `.env` file with required values before starting.
+```bash
+cd backend
+```
 
-   ### create venv and activate (Windows)
+Update the `.env` file with the required values before starting.
 
-   python -m venv .venv
-   .venv\Scripts\activate
+### Create virtual environment and activate (Windows)
 
-   ### or macOS / Linux
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+```
 
-   python3 -m venv .venv
-   source .venv/bin/activate
-   
+### Or macOS / Linux
 
-   pip install -r requirements.txt
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
 
-   ### run backend (development)
+### Install dependencies
 
-   uvicorn main:app --reload
+```bash
+pip install -r requirements.txt
+```
 
-## 4. Frontend (JS)
-   
-   open new terminal
-   cd frontend
-   npm install
-   npm run dev
+### Run backend (development)
 
-##5. Environment
-   - Backend defaults to port 8000; frontend (Vite) defaults to 5173.
+```bash
+uvicorn main:app --reload
+```
 
-open the frontend URL shown by Vite (usually http://localhost:5173) and verify the backend at http://localhost:8000/docs
+## 3. Frontend (JavaScript)
+
+Open a new terminal:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+## 4. Environment
+
+- Backend default: `http://localhost:8000`
+- Frontend (Vite) default: `http://localhost:5173`
+
+## 5. Verify the app
+
+Open the frontend URL shown by Vite (usually `http://localhost:5173`).
+
+Verify the backend API docs at:
+
+```text
+http://localhost:8000/docs
+```
