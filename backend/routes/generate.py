@@ -2,6 +2,7 @@ from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from io import BytesIO
+from services.pptx_engine import build_presentation
 
 router = APIRouter()
 
@@ -12,5 +13,17 @@ class SlideRequest(BaseModel):
 
 @router.post("/generate")
 async def generate_slides(req: SlideRequest):
-    # Stub — replaced with real pptx service on Slide 14
-    return {"message": f"Will build {req.slide_count} slides for: {req.prompt}"}
+    slides_data = [
+        {"title": f"Slide {i+1}: {req.prompt}",
+         "bullets": ["Key point", "Another point", "Third point"]}
+        for i in range(req.slide_count)
+    ]
+    pptx_bytes = build_presentation(slides_data)
+    return StreamingResponse(
+        BytesIO(pptx_bytes),
+        media_type=(
+            "application/vnd.openxmlformats-"
+            "officedocument.presentationml.presentation"
+        ),
+        headers={"Content-Disposition": "attachment; filename=slides.pptx"}
+    )
