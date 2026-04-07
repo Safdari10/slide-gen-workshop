@@ -1,4 +1,3 @@
-// frontend/src/hooks/useSlideGenerator.ts
 import { useState } from "react";
 import type { SlideRequest } from "../types/api";
 
@@ -15,13 +14,18 @@ export function useSlideGenerator() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(req),
       });
-      const raw = await res.text();
-      const data = raw ? JSON.parse(raw) : null;
       if (!res.ok) {
-        setStatus(data?.message || `Error ${res.status}`);
+        const t = await res.text();
+        setStatus(`Error ${res.status}: ${t || "unknown"}`);
         return;
       }
-      setStatus(data?.message || "Done!");
+      const blob: Blob = await res.blob();
+      const a = document.createElement("a") as HTMLAnchorElement;
+      a.href = URL.createObjectURL(blob);
+      a.download = "slides.pptx";
+      a.click();
+      URL.revokeObjectURL(a.href);
+      setStatus("✅ Downloaded!");
     } catch {
       setStatus("Cannot reach backend. Is FastAPI running?");
     } finally {
