@@ -5,11 +5,14 @@ import { useSlideGenerator } from "./hooks/useSlideGenerator";
 import { GenerateButton } from "./components/GenerateButton";
 import { StatusMessage } from "./components/StatusMessage";
 import type { SlideRequest } from "./types/api";
+import { useManim } from "./hooks/useManim";
+import { ManimPlayer } from "./components/ManimPlayer";
 
 export default function App() {
   const [prompt, setPrompt] = useState<string>("");
   const [slideCount, setSlideCount] = useState<number>(5);
   const { status, loading, generate } = useSlideGenerator();
+  const { videoUrl, loading: manimLoading, error, renderScene } = useManim();
 
   function handleGenerate() {
     const req: SlideRequest = { prompt, slide_count: slideCount };
@@ -40,6 +43,12 @@ export default function App() {
       <br />
       <GenerateButton onClick={handleGenerate} loading={loading} />
       <StatusMessage message={status} />
+      <ManimPlayer
+        videoUrl={videoUrl}
+        loading={manimLoading}
+        error={error}
+        onRender={() => renderScene()}
+      />
     </div>
   );
 }
