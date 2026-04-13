@@ -1,49 +1,60 @@
-# Quick Start — Clone, Install, Run
+# Slide Gen Workshop
 
-## 1. Clone
+A full-stack workshop app that generates downloadable PowerPoint slides with AI and can render a sample Manim scene.
 
-```bash
-git clone <repo-url>
-cd slide-gen-workshop
+## Tech stack
+
+- Backend: FastAPI, Pydantic, python-pptx, Google GenAI, Manim
+- Frontend: React + TypeScript + Vite
+- Containerized run: Docker + docker-compose
+
+## Project layout
+
+```text
+slide-gen-workshop/
+	backend/     # FastAPI API for slide generation and rendering
+	frontend/    # React UI (Vite in dev, Nginx in Docker)
 ```
 
-## 2. Backend (Python)
+## Run locally
+
+### 1) Backend
 
 ```bash
 cd backend
+python -m venv .venv
 ```
 
-Update the `.env` file with the required values before starting.
-
-### Create virtual environment and activate (Windows)
+Windows:
 
 ```bash
-python -m venv .venv
 .venv\Scripts\activate
 ```
 
-### Or macOS / Linux
+macOS/Linux:
 
 ```bash
-python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-### Install dependencies
+Install dependencies and run:
 
 ```bash
 pip install -r requirements.txt
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-### Run backend (development)
+Create `backend/.env` with:
 
-```bash
-uvicorn main:app --reload
+```env
+GOOGLE_API_KEY=your_key
+GOOGLE_MODEL=gemini-2.5-flash
+FALLBACK_MODEL=gemini-1.5-flash
 ```
 
-## 3. Frontend (JavaScript)
+### 2) Frontend
 
-Open a new terminal:
+In another terminal:
 
 ```bash
 cd frontend
@@ -51,17 +62,31 @@ npm install
 npm run dev
 ```
 
-## 4. Environment
+Vite runs on `http://localhost:5173` and proxies `/api/*` to `http://127.0.0.1:8000`.
 
-- Backend default: `http://localhost:8000`
-- Frontend (Vite) default: `http://localhost:5173`
+## Run with Docker
 
-## 5. Verify the app
+From the repository root:
 
-Open the frontend URL shown by Vite (usually `http://localhost:5173`).
-
-Verify the backend API docs at:
-
-```text
-http://localhost:8000/docs
+```bash
+docker compose up --build
 ```
+
+- Frontend: `http://localhost:3000`
+- Backend: `http://localhost:8000`
+
+`docker-compose.yml` loads environment variables from `backend/.env`.
+
+## API endpoints
+
+- `GET /health` - health check
+- `POST /generate` - returns a generated `.pptx` file
+- `POST /render?scene_class=TitleSlide` - returns a rendered `.mp4`
+
+Interactive API docs: `http://localhost:8000/docs`
+
+## Notes
+
+- The frontend downloads generated `.pptx` files directly in the browser.
+- The backend currently renders `manim_scenes/title_scene.py` for `/render`.
+- For component-level details, see `backend/README.md` and `frontend/README.md`.
